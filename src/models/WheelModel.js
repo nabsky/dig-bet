@@ -19,9 +19,16 @@ export default class WheelModel {
   }
 
   set statText(textValue) {
+    if(textValue.trim().length == 0){
+      this.stat.length = 0;
+      return;
+    }
     this.stat = textValue.split(' ').map(val => {
       return parseInt(val)||null;
     });
+    if(this.stat.length > 37){
+      this.stat.length = 37;
+    }
   }
 
   @computed
