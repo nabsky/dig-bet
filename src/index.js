@@ -1,5 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DevTools from "mobx-react-devtools";
 
 
@@ -11,7 +12,9 @@ const store = new WheelModel();
 
 render(
   <div>
-    <App store={store} />
+    <MuiThemeProvider>
+      <App store={store} />
+    </MuiThemeProvider>
     <DevTools />
   </div>,
   document.getElementById("root")
