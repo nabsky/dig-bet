@@ -24,8 +24,8 @@ class StatLine extends React.Component {
     return (
       <div style={{ width: '100%', position: 'relative' }} onClick={this.props.onClick}>
         <div style={{ height:15, backgroundColor: cyan500, width: `calc(100% * ${this.props.count} / ${this.props.max})` }}></div>
-        <div style={{ fontSize: 12, fontFamily: 'sans-serif', color: cyan50, position: 'absolute', top: 1, left: 5}}>{this.props.number}</div>
-        <div style={{ fontSize: 12, fontFamily: 'sans-serif', color: cyan50, position: 'absolute', top: 1, right: 5}}>{this.props.count}</div>
+        <div style={{ MozUserSelect:'none', WebkitUserSelect:'none', msUserSelect:'none', fontSize: 12, fontFamily: 'sans-serif', color: cyan50, position: 'absolute', top: 1, left: 5}}>{this.props.number}</div>
+        <div style={{ MozUserSelect:'none', WebkitUserSelect:'none', msUserSelect:'none', fontSize: 12, fontFamily: 'sans-serif', color: cyan50, position: 'absolute', top: 1, right: 5}}>{this.props.count}</div>
       </div>
     );
   }

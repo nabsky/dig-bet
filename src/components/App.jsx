@@ -76,7 +76,7 @@ class App extends React.Component {
                 </Stepper>
                 <div style={contentStyle}>
                   {finished ? (
-                    <p>
+                    <div>
                       <a
                         href="#"
                         onClick={(event) => {
@@ -86,10 +86,10 @@ class App extends React.Component {
                       >
                         Click here
                       </a> to reset the example.
-                    </p>
+                    </div>
                   ) : (
                     <div>
-                      <p>{this.getStepContent(stepIndex)}</p>
+                      <div>{this.getStepContent(stepIndex)}</div>
                       <div style={{marginTop: 12, display: 'flex', justifyContent: 'space-between'}}>
                         <FlatButton
                           label="Back"
