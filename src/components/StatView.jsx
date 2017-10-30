@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {observable, action} from "mobx";
 import {observer} from "mobx-react";
+import {blueGrey400} from 'material-ui/styles/colors';
 
 import StatLine from "./StatLine";
 
@@ -23,7 +24,7 @@ class StatView extends React.Component {
 
   render() {
     return (
-      <div style={{ flex: 1, height: 37*15, width: 200, backgroundColor: '#F8F8F8' }}>
+      <div style={{ flex: 1, height: 37*15, width: 200, backgroundColor: blueGrey400 }}>
         {this.getStatLines()}
       </div>
     );
