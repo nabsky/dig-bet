@@ -1,23 +1,14 @@
 import React from "react";
 import { render } from "react-dom";
-import DevTools from "mobx-react-devtools";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import WheelSetup from "./components/WheelSetup";
-import StatView from "./components/StatView";
+import App from "./components/App";
 import WheelModel from "./models/WheelModel";
 
 
 const store = new WheelModel();
 
 render(
-  <MuiThemeProvider>
-    <div style={{ display: 'flex' }}>
-      <DevTools />
-      <WheelSetup store={store} />
-      <StatView store={store} />
-    </div>
-  </MuiThemeProvider>,
+  <App store={store} />,
   document.getElementById("root")
 );
 
