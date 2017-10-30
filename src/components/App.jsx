@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
-import DevTools from "mobx-react-devtools";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import WheelSetup from "./WheelSetup";
@@ -19,7 +18,6 @@ class App extends React.Component {
   render() {
     return  <MuiThemeProvider>
               <div style={{ display: 'flex' }}>
-                <DevTools />
                 <WheelSetup store={this.props.store} />
                 <StatView store={this.props.store} />
               </div>
