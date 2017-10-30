@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
+import {observer} from "mobx-react";
 import {
   Step,
   Stepper,
@@ -10,7 +11,9 @@ import FlatButton from 'material-ui/FlatButton';
 
 import WheelSetup from "./WheelSetup";
 import StatView from "./StatView";
+import ChiSquared from "./ChiSquared";
 
+@observer
 class App extends React.Component {
 
   static propTypes = {
@@ -49,7 +52,9 @@ class App extends React.Component {
                   <StatView store={this.props.store} />
                 </div>;
       case 1:
-        return `TODO: Pearson's χ²-test, Gaussian Distribution, Tolerance Interval`;
+        return  <div style={{ display: 'flex'}}>
+                  <ChiSquared value={this.props.store.chiSquared} />
+                </div>;
       case 2:
         return 'TODO: Unsafe bets, Strategies';
       default:
@@ -60,6 +65,7 @@ class App extends React.Component {
 
   render() {
     const {finished, stepIndex} = this.state;
+    const {store} = this.props;
     const contentStyle = {margin: '0 16px'};
 
     return    <div style={{ width: '100%', margin: 'auto', display: 'flex', flexDirection: 'column' }}>
@@ -99,6 +105,7 @@ class App extends React.Component {
                         />
                         <RaisedButton
                           label={stepIndex === 2 ? 'Finish' : 'Next'}
+                          disabled={this.props.store.stat.length != 37}
                           primary={true}
                           onClick={this.handleNext}
                         />
