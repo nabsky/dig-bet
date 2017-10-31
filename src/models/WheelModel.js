@@ -2,6 +2,8 @@ import {observable, computed, action} from "mobx";
 
 export default class WheelModel {
 
+  b = 1.95996;//0.975
+
   @observable stat = [];
 
   @computed
@@ -75,6 +77,24 @@ export default class WheelModel {
   }
 
   @computed
+  get minProbabilities() {
+    const total = this.total;
+    const b = this.b;
+    return this.probabilities.map(p => {
+      return this.minTolerance(p, b, total);
+    })
+  }
+
+  @computed
+  get maxProbabilities() {
+    const total = this.total;
+    const b = this.b;
+    return this.probabilities.map(p => {
+      return this.maxTolerance(p, b, total);
+    })
+  }
+
+  @computed
   get statText() {
     return this.stat.join(' ');
   }
@@ -95,6 +115,14 @@ export default class WheelModel {
   @computed
   get max() {
     return Math.max(...this.stat);
+  }
+
+  minTolerance = (p, b, sum) => {
+    return (p + Math.pow(b, 2) / (2 * sum) - b * Math.sqrt(p * (1 - p) / sum + Math.pow(b, 2) / (4 * Math.pow(sum, 2)))) / (1 + Math.pow(b, 2) / sum);
+  }
+
+  maxTolerance = (p, b, sum) => {
+    return (p + Math.pow(b, 2) / (2 * sum) + b * Math.sqrt(p * (1 - p) / sum + Math.pow(b, 2) / (4 * Math.pow(sum, 2)))) / (1 + Math.pow(b, 2) / sum);
   }
 
   @action

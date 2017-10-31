@@ -13,6 +13,8 @@ import WheelSetup from "./WheelSetup";
 import StatView from "./StatView";
 import ChiSquared from "./ChiSquared";
 import Distribution from "./Distribution";
+import ToleranceInterval from "./ToleranceInterval";
+
 
 @observer
 class App extends React.Component {
@@ -58,8 +60,8 @@ class App extends React.Component {
                     <ChiSquared value={this.props.store.chiSquared} />
                     <Distribution store={this.props.store} />
                   </div>
-                  <div style={{ display: 'flex'}}>
-                    //TODO tolerance interval
+                  <div style={{ display: 'flex', flexDirection: 'column', width: '50%', alignItems: 'center' }}>
+                    <ToleranceInterval store={this.props.store} />
                   </div>
                 </div>;
       case 2:

@@ -36,6 +36,7 @@
     "mobx-react-devtools": "^4.2.11",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-svg": "^2.1.22"
+    "react-svg": "^2.1.22",
+    "svg.js": "^2.6.3"
   }
 }
