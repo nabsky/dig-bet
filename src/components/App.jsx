@@ -12,6 +12,7 @@ import FlatButton from 'material-ui/FlatButton';
 import WheelSetup from "./WheelSetup";
 import StatView from "./StatView";
 import ChiSquared from "./ChiSquared";
+import Distribution from "./Distribution";
 
 @observer
 class App extends React.Component {
@@ -53,7 +54,13 @@ class App extends React.Component {
                 </div>;
       case 1:
         return  <div style={{ display: 'flex'}}>
-                  <ChiSquared value={this.props.store.chiSquared} />
+                  <div style={{ display: 'flex', flexDirection: 'column', width: '50%', alignItems: 'center' }}>
+                    <ChiSquared value={this.props.store.chiSquared} />
+                    <Distribution store={this.props.store} />
+                  </div>
+                  <div style={{ display: 'flex'}}>
+                    //TODO tolerance interval
+                  </div>
                 </div>;
       case 2:
         return 'TODO: Unsafe bets, Strategies';

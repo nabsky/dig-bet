@@ -1,6 +1,7 @@
 import {observable, computed, action} from "mobx";
 
 export default class WheelModel {
+
   @observable stat = [];
 
   @computed
@@ -27,6 +28,13 @@ export default class WheelModel {
   }
 
   @computed
+  get averageProbability() {
+    return this.probabilities.reduce(function(a, b) {
+      return a + b;
+    }) / this.probabilities.length;
+  }
+
+  @computed
   get chiSquared() {
     var average = this.average;
     return this.stat.map(n => {
@@ -34,6 +42,33 @@ export default class WheelModel {
     }).reduce(function(a, b) {
       return a + b;
     });
+  }
+
+  @computed
+  get standardDeviation() {
+    const averageProbability = this.averageProbability;
+    return Math.sqrt(this.probabilities.map(prob => {
+      return Math.pow((prob - averageProbability), 2);
+    }).reduce(function(a, b) {
+      return a + b;
+    }) / (this.probabilities.length - 1));
+  }
+
+  @computed
+  get distributionBuckets() {
+    const averageProbability = this.averageProbability;
+    const standardDeviation = this.standardDeviation;
+    const BUCKETS = [-3.5, -3, -2.5, -2.0, -1.5, -1.0, -0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 1000.0];
+    const distributionBuckets = new Array(BUCKETS.length).fill(0);
+    this.probabilities.map(prob => {
+      for(let i = 0; i < BUCKETS.length; i++){
+        if(prob < averageProbability + BUCKETS[i] * standardDeviation){
+          distributionBuckets[i]++;
+          break;
+        }
+      }
+    });
+    return distributionBuckets;
   }
 
   @computed
