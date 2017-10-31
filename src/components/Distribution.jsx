@@ -25,8 +25,7 @@ class Distribution extends React.Component {
       let rect = svg.querySelector('#gd' + index);
       let height = parseFloat(rect.getAttribute("height"));
       let y = parseFloat(rect.getAttribute("y"));
-      var scale = bucket.length * 100.0 / total;
-      let newHeight = height * scale / 100;
+      let newHeight = height * bucket.length / total;
       let newY = y + (height - newHeight);
       rect.setAttribute("height", newHeight);
       rect.setAttribute("y", newY);
