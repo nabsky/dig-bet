@@ -14,6 +14,29 @@ export default class WheelModel {
   }
 
   @computed
+  get probabilities() {
+    var total = this.total;
+    return this.stat.map((element, index) => {
+      return element / total;
+    });
+  }
+
+  @computed
+  get average() {
+    return this.total / this.stat.length;
+  }
+
+  @computed
+  get chiSquared() {
+    var average = this.average;
+    return this.stat.map(n => {
+      return Math.pow((n - average), 2) / average;
+    }).reduce(function(a, b) {
+      return a + b;
+    });
+  }
+
+  @computed
   get statText() {
     return this.stat.join(' ');
   }
