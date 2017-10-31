@@ -59,11 +59,14 @@ export default class WheelModel {
     const averageProbability = this.averageProbability;
     const standardDeviation = this.standardDeviation;
     const BUCKETS = [-3.5, -3, -2.5, -2.0, -1.5, -1.0, -0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 1000.0];
-    const distributionBuckets = new Array(BUCKETS.length).fill(0);
-    this.probabilities.map(prob => {
+    const distributionBuckets = [];
+    for(let i = 0; i < BUCKETS.length; i++){
+      distributionBuckets.push([]);
+    }
+    this.probabilities.map((prob, number) => {
       for(let i = 0; i < BUCKETS.length; i++){
-        if(prob < averageProbability + BUCKETS[i] * standardDeviation){
-          distributionBuckets[i]++;
+        if(prob < (averageProbability + BUCKETS[i] * standardDeviation)){
+          distributionBuckets[i].push(number);
           break;
         }
       }
