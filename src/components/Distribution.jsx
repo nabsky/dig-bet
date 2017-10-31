@@ -16,17 +16,21 @@ class Distribution extends React.Component {
   }
 
   drawDistributionBuckets(svg, distributionBuckets){
+    const total = distributionBuckets
+    .map(bucket => bucket.length)
+    .reduce(function(a, b){
+      return a + b;
+    });
     distributionBuckets.forEach((bucket, index) => {
       let rect = svg.querySelector('#gd' + index);
       let height = parseFloat(rect.getAttribute("height"));
       let y = parseFloat(rect.getAttribute("y"));
-      var scale = bucket.length * 100.0 / 37.0;
+      var scale = bucket.length * 100.0 / total;
       let newHeight = height * scale / 100;
       let newY = y + (height - newHeight);
       rect.setAttribute("height", newHeight);
       rect.setAttribute("y", newY);
     });
-    console.log(distributionBuckets);
   }
 
   render() {
