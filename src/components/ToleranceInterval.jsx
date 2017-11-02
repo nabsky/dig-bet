@@ -38,11 +38,11 @@ class ToleranceInterval extends React.Component {
     let shift = r0 + (r - r0) / 2 - z * scale;//shift zero coord to center
 
 
-    if (shift + min * scale < r0) {
-        shift = r0 - min * scale;//fix shift
+    if (shift + minLow * scale < r0) {
+        shift = r0 - minLow * scale;//fix shift
     }
-    if (shift + max * scale > r) {
-        shift = r - max * scale;//fix shift
+    if (shift + maxHigh * scale > r) {
+        shift = r - maxHigh * scale;//fix shift
     }
 
 
