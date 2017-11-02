@@ -20,8 +20,8 @@ class ToleranceInterval extends React.Component {
     const maxProbabilities = store.maxProbabilities;
 
     //calc scale
-    const minLow = Math.min(...minProbabilities);
-    const maxHigh = Math.max(...maxProbabilities);
+    let minLow = Math.min(...minProbabilities);
+    let maxHigh = Math.max(...maxProbabilities);
 
     const n = 1.0/store.stat.length;
     const z = 1.0/(store.stat.length - 1);
@@ -35,7 +35,7 @@ class ToleranceInterval extends React.Component {
     }
 
     const scale = (r - r0 ) / (maxHigh - minLow);
-    const shift = r0 + (r - r0) / 2 - z * scale;//shift zero coord to center
+    let shift = r0 + (r - r0) / 2 - z * scale;//shift zero coord to center
 
 
     if (shift + min * scale < r0) {
