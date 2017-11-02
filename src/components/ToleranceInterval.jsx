@@ -8,6 +8,7 @@ import SVG from 'svg.js';
 @observer
 class ToleranceInterval extends React.Component {
 
+  ROULETTE_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 
   getPointColor(lb, hb, z, zz) {
       if (lb > z) {
@@ -45,9 +46,26 @@ class ToleranceInterval extends React.Component {
       return d;
   };
 
-  drawToleranceInterval(svg, store){
-    const ROULETTE_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+  getPoliline(values, cx, cy, shift, scale) {
+    var arr = [];
+    var p0;
+    for (var i = 0; i < values.length; i++) {
+      var _rx = shift + values[this.ROULETTE_ORDER[i]] * scale;
+      var a = 360.0 * i / values.length - 90;
+      var p = [];
+      p.push(cx + _rx * Math.cos(a * (Math.PI / 180)));
+      p.push(cy + _rx * Math.sin(a * (Math.PI / 180)));
+      arr.push(p);
+      if (i == 0) {
+          p0 = p;
+      }
+    }
+    arr.push(p0);
+    return arr;
+  };
 
+
+  drawToleranceInterval(svg, store){
     const outerCircle = svg.querySelector('#SvgjsCircle1082');
     const cx = parseFloat(outerCircle.getAttribute("cx"));
     const cy = parseFloat(outerCircle.getAttribute("cy"));
@@ -89,37 +107,11 @@ class ToleranceInterval extends React.Component {
     const draw = SVG(svg);
 
     //draw max ti
-    var arr = [];
-    var p0;
-    for (var i = 0; i < maxProbabilities.length; i++) {
-        var _rx = shift + maxProbabilities[ROULETTE_ORDER[i]] * scale;
-        var a = 360.0 * i / maxProbabilities.length - 90;
-        var p = [];
-        p.push(cx + _rx * Math.cos(a * (Math.PI / 180)));
-        p.push(cy + _rx * Math.sin(a * (Math.PI / 180)));
-        arr.push(p);
-        if (i == 0) {
-            p0 = p;
-        }
-    }
-    arr.push(p0);
+    var arr = this.getPoliline(maxProbabilities, cx, cy, shift, scale);
     draw.polyline(arr).fill({color: 'blue', opacity: 0.05}).stroke({width: 1, color: 'blue'});
 
     //draw min ti
-    arr.length = 0;
-    var p0;
-    for (var i = 0; i < minProbabilities.length; i++) {
-        var _rx = shift + minProbabilities[ROULETTE_ORDER[i]] * scale;
-        var a = 360.0 * i / minProbabilities.length - 90;
-        var p = [];
-        p.push(cx + _rx * Math.cos(a * (Math.PI / 180)));
-        p.push(cy + _rx * Math.sin(a * (Math.PI / 180)));
-        arr.push(p);
-        if (i == 0) {
-            p0 = p;
-        }
-    }
-    arr.push(p0);
+    arr = this.getPoliline(minProbabilities, cx, cy, shift, scale);
     draw.polyline(arr).fill({color: 'white'}).stroke({width: 1, color: 'blue'});
 
     //draw ideal line
@@ -155,28 +147,15 @@ class ToleranceInterval extends React.Component {
     });
 
     //draw prob
-    arr.length = 0;
-    var p0;
-    for (var i = 0; i < probabilities.length; i++) {
-        var _rx = shift + probabilities[ROULETTE_ORDER[i]] * scale;
-        var p = [];
-        var a = 360.0 * i / probabilities.length - 90;
-        p.push(cx + _rx * Math.cos(a * (Math.PI / 180)));
-        p.push(cy + _rx * Math.sin(a * (Math.PI / 180)));
-        arr.push(p);
-        if (i == 0) {
-            p0 = p;
-        }
-    }
-    arr.push(p0);
+    arr = this.getPoliline(probabilities, cx, cy, shift, scale);
     draw.polyline(arr).fill('none').stroke({width: 2, color: 'blue'});
 
     //draw points
     var failed = false;
     for (var i = 0; i < probabilities.length; i++) {
-        var rx = shift + scale * probabilities[ROULETTE_ORDER[i]];
+        var rx = shift + scale * probabilities[this.ROULETTE_ORDER[i]];
         var a = 360.0 * i / probabilities.length - 90;
-        var color = this.getPointColor(minProbabilities[ROULETTE_ORDER[i]], maxProbabilities[ROULETTE_ORDER[i]], z, zz);
+        var color = this.getPointColor(minProbabilities[this.ROULETTE_ORDER[i]], maxProbabilities[this.ROULETTE_ORDER[i]], z, zz);
         if (color == "#ff0000" || color == "#333333") {
             failed = true;
         }
@@ -204,10 +183,10 @@ class ToleranceInterval extends React.Component {
         }
     }
     //draw weakest quadrant
-    var ws = ROULETTE_ORDER.indexOf(quadrantFirstNumber);
-    var we = ws + 7;
-    var startA = 360.0 * ws / 37.0 - 360.0 / 37.0 / 2;
-    var endA = 360.0 * we / 37.0 + 360.0 / 37.0 / 2;
+    var ws = this.ROULETTE_ORDER.indexOf(quadrantFirstNumber);
+    var we = ws + Math.round(store.stat.length/4) - 1;
+    var startA = 360.0 * ws / store.stat.length - 360.0 / store.stat.length / 2;
+    var endA = 360.0 * we / store.stat.length + 360.0 / store.stat.length / 2;
     draw.path(this.describeArc(cx, cy, r, startA, endA))
         .stroke({width: 3, color: 'red'})
         .fill({opacity: 0});
