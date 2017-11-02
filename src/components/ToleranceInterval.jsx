@@ -108,11 +108,11 @@ class ToleranceInterval extends React.Component {
 
     //draw max ti
     var arr = this.getPoliline(maxProbabilities, cx, cy, shift, scale);
-    draw.polyline(arr).fill({color: 'blue', opacity: 0.05}).stroke({width: 1, color: 'blue'});
+    draw.polyline(arr).fill({color: '#42a5f5', opacity: 0.05}).stroke({width: 1, color: '#42a5f5'});
 
     //draw min ti
     arr = this.getPoliline(minProbabilities, cx, cy, shift, scale);
-    draw.polyline(arr).fill({color: 'white'}).stroke({width: 1, color: 'blue'});
+    draw.polyline(arr).fill({color: 'white'}).stroke({width: 1, color: '#42a5f5'});
 
     //draw ideal line
     const rn = shift + n * scale;
@@ -148,7 +148,7 @@ class ToleranceInterval extends React.Component {
 
     //draw prob
     arr = this.getPoliline(probabilities, cx, cy, shift, scale);
-    draw.polyline(arr).fill('none').stroke({width: 2, color: 'blue'});
+    draw.polyline(arr).fill('none').stroke({width: 2, color: '#42a5f5'});
 
     //draw points
     var failed = false;
