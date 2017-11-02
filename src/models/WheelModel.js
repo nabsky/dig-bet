@@ -3,6 +3,7 @@ import {observable, computed, action} from "mobx";
 export default class WheelModel {
 
   b = 1.95996;//0.975
+  ROULETTE_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 
   @observable stat = [];
 
@@ -93,6 +94,25 @@ export default class WheelModel {
       return this.maxTolerance(p, b, total);
     })
   }
+
+  @computed
+  get quadrantFirstNumber() {
+    const probabilities = this.probabilities;
+    let max = 0;
+    let maxStartIndex = -1;
+    for(let i = 0; i < 37; i++){
+        let sum = 0;
+        for(let j = 0; j < 8; j++) {
+            let index = this.ROULETTE_ORDER[(37 + i + j) % 37];
+            sum += probabilities[index];
+        }
+        if(sum > max){
+            max = sum;
+            maxStartIndex = this.ROULETTE_ORDER[i];
+        }
+    }
+    return maxStartIndex;
+}
 
   @computed
   get statText() {

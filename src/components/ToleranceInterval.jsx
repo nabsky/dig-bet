@@ -8,6 +8,43 @@ import SVG from 'svg.js';
 @observer
 class ToleranceInterval extends React.Component {
 
+
+  getPointColor(lb, hb, z, zz) {
+      if (lb > z) {
+          return "#ff0000";
+      } else if (hb < zz) {
+          return "#333333";
+      } else if ((hb < z) && (lb > zz)) {
+          return "#42A5F5";
+      }
+      return "#ffffff";
+  };
+
+
+  polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+      var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+
+      return {
+          x: centerX + (radius * Math.cos(angleInRadians)),
+          y: centerY + (radius * Math.sin(angleInRadians))
+      };
+  };
+
+  describeArc(x, y, radius, startAngle, endAngle) {
+
+      var start = this.polarToCartesian(x, y, radius, endAngle);
+      var end = this.polarToCartesian(x, y, radius, startAngle);
+
+      var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+      var d = [
+          "M", start.x, start.y,
+          "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+      ].join(" ");
+
+      return d;
+  };
+
   drawToleranceInterval(svg, store){
     const ROULETTE_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 
@@ -18,8 +55,10 @@ class ToleranceInterval extends React.Component {
     const innerCircle = svg.querySelector('#SvgjsCircle1083');
     const r0 = parseFloat(innerCircle.getAttribute("r"));
 
+    const probabilities = store.probabilities;
     const minProbabilities = store.minProbabilities;
     const maxProbabilities = store.maxProbabilities;
+    const quadrantFirstNumber = store.quadrantFirstNumber;
 
     //calc scale
     let minLow = Math.min(...minProbabilities);
@@ -90,7 +129,7 @@ class ToleranceInterval extends React.Component {
         cy: cy,
         fill: "none",
         stroke: 'green',
-        "stroke-width": 0.5
+        "stroke-width": 1
     });
 
     //draw zero line
@@ -101,7 +140,7 @@ class ToleranceInterval extends React.Component {
         fill: "none",
         stroke: 'red',
         opacity: 0.5,
-        "stroke-width": 0.5
+        "stroke-width": 1
     });
 
     //draw double zero line
@@ -112,8 +151,66 @@ class ToleranceInterval extends React.Component {
         fill: "none",
         stroke: 'black',
         opacity: 0.5,
-        "stroke-width": 0.5
+        "stroke-width": 1
     });
+
+    //draw prob
+    arr.length = 0;
+    var p0;
+    for (var i = 0; i < probabilities.length; i++) {
+        var _rx = shift + probabilities[ROULETTE_ORDER[i]] * scale;
+        var p = [];
+        var a = 360.0 * i / probabilities.length - 90;
+        p.push(cx + _rx * Math.cos(a * (Math.PI / 180)));
+        p.push(cy + _rx * Math.sin(a * (Math.PI / 180)));
+        arr.push(p);
+        if (i == 0) {
+            p0 = p;
+        }
+    }
+    arr.push(p0);
+    draw.polyline(arr).fill('none').stroke({width: 2, color: 'blue'});
+
+    //draw points
+    var failed = false;
+    for (var i = 0; i < probabilities.length; i++) {
+        var rx = shift + scale * probabilities[ROULETTE_ORDER[i]];
+        var a = 360.0 * i / probabilities.length - 90;
+        var color = this.getPointColor(minProbabilities[ROULETTE_ORDER[i]], maxProbabilities[ROULETTE_ORDER[i]], z, zz);
+        if (color == "#ff0000" || color == "#333333") {
+            failed = true;
+        }
+        var c = draw.circle(5).attr({
+            cx: cx + rx * Math.cos(a * (Math.PI / 180)),
+            cy: cy + rx * Math.sin(a * (Math.PI / 180)),
+            fill: color,
+            stroke: "#000000",
+            "stroke-width": 1
+        });
+        if (color != "#ffffff") {
+            c.attr("stroke", color);
+        }
+
+        if (color != "#ffffff" && color != "#42A5F5") {
+            var startA = 360.0 * i / 37.0 - 360.0 / 37.0 / 2;
+            var endA = 360.0 * i / 37.0 + 360.0 / 37.0 / 2;
+            draw.path(this.describeArc(cx, cy, r + 20 * 2, startA, endA))
+                .stroke({width: 4, color: color})
+                .fill({opacity: 0});
+
+            draw.path(this.describeArc(cx, cy, r0 - 4, startA, endA))
+                .stroke({width: 4, color: color})
+                .fill({opacity: 0});
+        }
+    }
+    //draw weakest quadrant
+    var ws = ROULETTE_ORDER.indexOf(quadrantFirstNumber);
+    var we = ws + 7;
+    var startA = 360.0 * ws / 37.0 - 360.0 / 37.0 / 2;
+    var endA = 360.0 * we / 37.0 + 360.0 / 37.0 / 2;
+    draw.path(this.describeArc(cx, cy, r, startA, endA))
+        .stroke({width: 3, color: 'red'})
+        .fill({opacity: 0});
   }
 
   render() {
