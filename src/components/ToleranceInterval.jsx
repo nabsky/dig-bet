@@ -194,12 +194,11 @@ class ToleranceInterval extends React.Component {
 
   render() {
     return (
-      <div style={{width: '100%'}}>
+      <div style={{width: '100%', height: 600}}>
       <ReactSVG
         path="/svg/wheel.svg"
         callback={svg => {this.drawToleranceInterval(svg, this.props.store)}}
         evalScript="always"
-        style={{ width: '100%' }}
       />
       </div>
     );

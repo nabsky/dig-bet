@@ -34,7 +34,7 @@ class Distribution extends React.Component {
 
   render() {
     return (
-      <div style={{width: '100%'}}>
+      <div style={{width: 400}}>
       <ReactSVG
         path="/svg/distribution.svg"
         callback={svg => {this.drawDistributionBuckets(svg, this.props.store.distributionBuckets)}}
